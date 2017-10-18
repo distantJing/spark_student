@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>ECharts</title>
+</head>
+<body>
+	<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+	<div id="main" style="height:400px"></div>
+	<!-- ECharts单文件引入 -->
+	<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+	<script type="text/javascript">
+		// 路径配置
+		require.config({
+			paths: {
+				echarts: 'http://echarts.baidu.com/build/dist'
+			}
+		});
+		require(
+		[
+		'echarts',
+		'echarts/chart/pie' // 使用柱状图就加载bar模块，按需加载
+		],
+		function (ec) {
+			// 基于准备好的dom，初始化echarts图表
+			var myChart = ec.init(document.getElementById('main'));
+
+			var  str="23911,8211.87,图书馆/0.13/1.16,开水/0.51/2.89,教务处/0.02/0.21,文印中心/0.02/0.06,校车/0.43/1.64,洗衣房/0.19/0.42,淋浴/0.28/0.30,超市/0.56/4.77,食堂/1.98/11.06,总计/4.12/22.50"
+			var strs= new Array();
+			strs=str.split(",");
+			source_data = []
+			for (i=2;i<strs.length-1 ;i++ ) {
+				var detail = strs[i].split('/')
+				source_data.push({value:detail[2], name:detail[0]})
+			}
+			day_avg = strs[strs.length-1].split('/')[2]
+
+			var option = {
+				title : {
+					text: '学生'+strs[0]+'消费明细',
+					subtext: '日均消费金额：'+day_avg,
+					x:'center'
+				},
+				tooltip : {
+					trigger: 'item',
+					formatter: "{a} <br/>{b} : {c} ({d}%)"
+				},
+				/*    legend: {
+				orient : 'vertical',
+				x : 'left',
+				data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+				}, */
+				toolbox: {
+					show : true,
+					feature : {
+						mark : {show: true},
+						dataView : {show: true, readOnly: false},
+						magicType : {
+							show: true,
+							type: ['pie', 'funnel'],
+							option: {
+								funnel: {
+									x: '25%',
+									width: '50%',
+									funnelAlign: 'left',
+									max: 1548
+								}
+							}
+						},
+						restore : {show: true},
+						saveAsImage : {show: true}
+					}
+				},
+				calculable : true,
+
+				series : [
+				{
+					name:'明细',
+					type:'pie',
+					radius : '55%',
+					center: ['50%', '60%'],
+					data:source_data
+				}
+				]
+			};z
+
+			// 为echarts对象加载数据
+			myChart.setOption(option);
+		}
+		);
+	</script>
+</body>
